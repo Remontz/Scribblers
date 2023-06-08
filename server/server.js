@@ -8,12 +8,24 @@ const mongoose = require('mongoose')
 const corsOptions = require('./config/corsOptions')
 const connectDB = require('./config/connectDB')
 
+// Possibly needed:
+// verifyJWT = require('.middleware/verifyJWT') **to protect(verify access token) for all routes
+// cookieParser = require('cookie-parser') **middleware for cookies
+
 const PORT = 3500 || 80
 
 connectDB()
 app.use(cors(corsOptions))
 
 app.use(express.json())
+
+//ROUTES
+// ROUTES BEFORE VERIFYING JWT
+// '/', '/register', '/authorize', '/refresh', '/logout'
+app.use('/api/register', require('./routes/api/register.routes'))
+
+// ROUTES AFTER (verifyJWT)
+// all content routes
 
 
 mongoose.connection.once('open', ()=> {
