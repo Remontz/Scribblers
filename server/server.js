@@ -8,16 +8,18 @@ const mongoose = require('mongoose')
 const corsOptions = require('./config/corsOptions')
 const connectDB = require('./config/connectDB')
 
-// Possibly needed:
-// verifyJWT = require('.middleware/verifyJWT') **to protect(verify access token) for all routes
-// cookieParser = require('cookie-parser') **middleware for cookies
+
+verifyJWT = require('.middleware/verifyJWT') //**to protect(verify access token) for all routes
+cookieParser = require('cookie-parser') //**middleware for cookies
 
 const PORT = 3500 || 80
 
 connectDB()
 app.use(cors(corsOptions))
 
+app.use(express.urlencoded({extended:false}))
 app.use(express.json())
+app.use(cookieParser())
 
 //ROUTES
 // ROUTES BEFORE VERIFYING JWT
@@ -25,6 +27,7 @@ app.use(express.json())
 app.use('/api/register', require('./routes/api/register.routes'))
 app.use('/api/authorize', require('./routes/api/authorize.routes'))
 
+app.use(verifyJWT)
 // ROUTES AFTER (verifyJWT)
 // all content routes
 app.use('/api/user', require('./routes/api/user.routes'))
