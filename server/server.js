@@ -27,7 +27,7 @@ app.use('/api/authorize', require('./routes/api/authorize.routes'))
 
 // ROUTES AFTER (verifyJWT)
 // all content routes
-
+app.use('/api/user', require('./routes/api/user.routes'))
 
 mongoose.connection.once('open', ()=> {
     console.log('Connected to MongoDB')
