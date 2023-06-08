@@ -11,7 +11,7 @@ const viewAllUsers = async (req, res) => {
 }
 
 const viewOneUser = async (req, res) => {
-    if(req?.params?.id) { return res.status(400).json({'message' : 'User id required'}) }
+    if(!req?.params?.id) { return res.status(400).json({'message' : 'PARAM: User id required'}) }
 
     const user = await User.findOne({_id: req.params.id}).exec()
     if(!user) { return res.status(204).json({ 'message' : `User with ID: ${req.params.id} not found` }) }
@@ -20,7 +20,23 @@ const viewOneUser = async (req, res) => {
 }
 
 //UPDATE
-const updateUser =
+const updateUser = async (req, res) => {
+    if(!req?.body?.id) { return res.status(400).json({ 'message' : 'PARAM: User ID required' }) }
+
+    const user = await User.findOne({_id: req.body.id}).exec()
+    if(!user) { return res.status(204).json('message' : `No User found with ID ${req.body.id}`) }
+
+    if(req?.body?.firstname) { user.name.first = req.body.firstname }
+    if(req?.body?.lastname) { user.name.last = req.body.lastname }
+    if(req?.body?.email) { user.email = req.body.email }
+    if(req?.body?.password) { user.password = req.body.password }
+
+    const result = await user.save() //saves changes made to user
+    res.json(result)
+}
 
 //DELETE
-const deleteUser
+const deleteUser = 
+
+
+module.exports = {viewAllUsers, viewOneUser, updateUser, deleteUser}
