@@ -23,6 +23,7 @@ app.use(express.json())
 // ROUTES BEFORE VERIFYING JWT
 // '/', '/register', '/authorize', '/refresh', '/logout'
 app.use('/api/register', require('./routes/api/register.routes'))
+app.use('/api/authorize', require('./routes/api/authorize.routes'))
 
 // ROUTES AFTER (verifyJWT)
 // all content routes
