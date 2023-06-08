@@ -2,22 +2,21 @@ const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema(
     {
-        name: {
-            first: {
-                type: String,
-                required: [true, 'First name is required.'],
-                minlength: [3, 'Name(s) must be at least 3 characters.']
-            },
-            last: {
-                type: String,
-                minlength: [3, 'Name(s) must be at least 3 characters.']
-            },
-            display: {
-                type: String,
-                required: [true, 'Display name is required.' ],
-                minlength: [5, 'Display Name must be at least 5 characters.'],
-                maxlength: [20, 'Display Name must be no more than 20 characters.']
-            }
+        firstname: {
+            type: String,
+            required: [true, 'First name is required.'],
+            minlength: [3, 'Name(s) must be at least 3 characters.']
+        },
+        lastname: {
+            type: String,
+            required: false,
+            minlength: [3, 'Name(s) must be at least 3 characters.']
+        },
+        displayName: {
+            type: String,
+            required: [true, 'Display name is required.' ],
+            minlength: [5, 'Display Name must be at least 5 characters.'],
+            maxlength: [20, 'Display Name must be no more than 20 characters.']
         },
         email: {
             type: String,
@@ -27,7 +26,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Valid Password is required']
         },
-        favorites: {
+        favorites: [{
             poems: [{
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Poem'
@@ -40,8 +39,8 @@ const userSchema = new mongoose.Schema(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Novel'
             }]
-        },
-        works: {
+        }],
+        works: [{
             poems: [{
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Poem'
@@ -54,8 +53,8 @@ const userSchema = new mongoose.Schema(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Novel'
             }]
-        },
-        library: {
+        }],
+        library: [{
             poems: [{
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Poem'
@@ -68,7 +67,7 @@ const userSchema = new mongoose.Schema(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Novel'
             }]
-        },
+        }],
         friends: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

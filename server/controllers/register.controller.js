@@ -1,9 +1,10 @@
+const asyncHandler = require('express-async-handler')
 const User = require('../models/user.model')
 const bcrypt = require('bcrypt')
 
-const handleNewUser = async (req, res) => {
-    const {name, email, password} = req.body
-    if(!name || !email || !password) { return res.status(400).json({'message' : 'Username, Email and Password are required.'}) }
+const handleNewUser = asyncHandler(async (req, res) => {
+    const {firstname, lastname, displayName, email, password} = req.body
+    if(!firstname || !displayName || !email || !password) { return res.status(400).json({'message' : 'Username, Email and Password are required.'}) }
     // check duplicate emails
     const duplicate = await User.findOne({email}).exec()
     if(duplicate){return res.status(409).json({'message': 'Email already in use.'})}
@@ -12,11 +13,9 @@ const handleNewUser = async (req, res) => {
         //encrypt
         const hashedPwd = await bcrypt.hash(password, 10)
         const result = await User.create({
-            "name" : {
-                "first" : name.first,
-                "last" : name.last,
-                "display" : name.display
-            },
+            "firstname" : firstname,
+            "lastname" : lastname,
+            "displayName" : displayName,
             "email" : email,
             "password" : hashedPwd
         })
@@ -24,6 +23,6 @@ const handleNewUser = async (req, res) => {
 
         res.status(201).json({'success' : `New user ${user} created`})
     } catch(err) { res.status(500).json({'message': err.message}) }
-}
+})
 
 module.exports = { handleNewUser }
