@@ -2,11 +2,13 @@ import '../styles/register.style.css'
 import React, { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import axios from '../api/axios'
 
 const NAME_REGEX = /^[a-zA-Z]{3,24}$/
 const DISPLAY_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/
 const EMAIL_REGEX = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/
+const REGISTER_URL = '/api/register'
 
 const Register = () => {
     const firstNameRef = useRef()
@@ -31,7 +33,7 @@ const Register = () => {
     const [validEmail, setValidEmail] = useState(false)
     const [emailFocus, setEmailFocus] = useState(false)
 
-    const [pwd, setPwd] = useState('')
+    const [password, setPassword] = useState('')
     const [validPwd, setValidPwd] = useState(false)
     const [pwdFocus, setPwdFocus] = useState(false)
 
@@ -75,17 +77,17 @@ const Register = () => {
     }, [email])
 
     useEffect(() => {
-        const result = PWD_REGEX.test(pwd)
+        const result = PWD_REGEX.test(password)
         console.log(result)
-        console.log(pwd)
+        console.log(password)
         setValidPwd(result)
-        const match = pwd === matchPwd
+        const match = password === matchPwd
         setValidMatch(match)
-    }, [pwd, matchPwd])
+    }, [password, matchPwd])
 
     useEffect(() => {
         setErrMsg('')
-    }, [firstname, lastname, email, pwd, matchPwd])
+    }, [firstname, lastname, email, password, matchPwd])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -93,17 +95,51 @@ const Register = () => {
         const v2 = NAME_REGEX.test(lastname)
         const v3 = DISPLAY_REGEX.test(displayName)
         const v4 = EMAIL_REGEX.test(email)
-        const v5 = PWD_REGEX.test(pwd)
+        const v5 = PWD_REGEX.test(password)
         if(!v1 || !v2 || !v3 || !v4 || !v5) {
             setErrMsg('Invalid Entry')
             return
         }
-        
+        try {
+            const response = await axios.post(REGISTER_URL, JSON.stringify({firstname, lastname, displayName, email, password}),
+            {
+                headers: { 'Content-Type' : 'application/json' },
+                withCredentials: true
+            }
+            )
+            setSuccess(true)
+            // CLEAR INPUT FIELDS
+            setFirstname('')
+            setLastname('')
+            setDisplayName('')
+            setEmail('')
+            setPassword('')
+            setMatchPwd('')
+        } catch (err) {
+            if(!err?.response) {
+                setErrMsg('No Server Response')
+            } else if(err.response?.status === 409) {
+                setErrMsg('Username Taken')
+            } else {
+                setErrMsg('Registration Failed')
+            }
+            errRef.current.focus()
+        }
+
     }
 
     //classes to create in CSS:
     // 'errmsg' 'offscreen' 'instructions' 'valid' 'hide' 'invalid'
     return (
+        <>
+        {success ? (
+            <section>
+                <h1>Success</h1>
+                <p>
+                    <a href='#'>Sign In</a>
+                </p>
+            </section>
+        ) : (
         <section>
             <p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live='assertive'>{errMsg}</p>
             <h1>Register</h1>
@@ -213,19 +249,19 @@ const Register = () => {
                     Must be a valid email address.
                 </p>
 
-                <label htmlFor="pwd">
+                <label htmlFor="password">
                     Password:
                     <span className={validPwd ? 'valid' : 'hide'}>
                         <FontAwesomeIcon icon={faCheck} />
                     </span>
-                    <span className={validPwd || !pwd ? 'hide' : 'invalid'}>
+                    <span className={validPwd || !password ? 'hide' : 'invalid'}>
                         <FontAwesomeIcon icon={faTimes} />
                     </span>
                 </label>
                 <input
                     type='password'
                     id='password'
-                    onChange={(e) => setPwd(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                     aria-invalid={validPwd ? 'false' : 'true'}
                     aria-describedby='pwdnote'
@@ -272,6 +308,8 @@ const Register = () => {
                 </span>
             </p>
         </section>
+        )}
+        </>
         )
 };
 

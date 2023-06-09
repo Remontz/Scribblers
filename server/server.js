@@ -3,18 +3,19 @@ const express = require('express')
 const app = express()
 
 const cors = require('cors')
-const mongoose = require('mongoose')
-
 const corsOptions = require('./config/corsOptions')
-const connectDB = require('./config/connectDB')
+const credentials = require('./middleware/credentials')
 
-
-verifyJWT = require('.middleware/verifyJWT') //**to protect(verify access token) for all routes
+verifyJWT = require('./middleware/verifyJWT') //**to protect(verify access token) for all routes
 cookieParser = require('cookie-parser') //**middleware for cookies
 
+const connectDB = require('./config/connectDB')
+const mongoose = require('mongoose')
 const PORT = 3500 || 80
 
 connectDB()
+
+app.use(credentials)
 app.use(cors(corsOptions))
 
 app.use(express.urlencoded({extended:false}))
