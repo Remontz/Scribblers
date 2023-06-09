@@ -1,0 +1,41 @@
+/* 'errmsg' 'offscreen' 'instructions' 'valid' 'hide' 'invalid' */
+.errmsg {
+  background-color: var(--sienna);
+  color: var(--engine);
+  font-weight: bold;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.offscreen {
+  position: absolute;
+  left: -9999px;
+}
+
+.instructions {
+  font-size: 0.75rem;
+  border-radius: 0.5rem;
+  background: #000;
+  color: var(--white);
+  padding: 0.25rem;
+  position: relative;
+  bottom: -10px;
+}
+
+.valid {
+  color: green;
+  margin-left: 0.25rem;
+}
+
+.hide {
+  display: none;
+}
+
+.invalid {
+  color: red;
+  margin-left: 0.25rem;
+}
+
+.line {
+    display: inline-block;
+}
