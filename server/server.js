@@ -26,6 +26,7 @@ app.use(cookieParser())
 // '/', '/register', '/authorize', '/refresh', '/logout'
 app.use('/api/register', require('./routes/api/register.routes'))
 app.use('/api/authorize', require('./routes/api/authorize.routes'))
+app.use('/api/logout', require('./routes/api/logout.routes'))
 
 app.use(verifyJWT)
 // ROUTES AFTER (verifyJWT)

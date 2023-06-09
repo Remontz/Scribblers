@@ -1,4 +1,5 @@
 const User = require('../models/user.model')
+const asyncHandler = require('express-async-handler')
 
 const handleLogout = asyncHandler( async(req, res) => {
     // DELETE ACCESSTOKEN CLIENTSIDE!!!!!!
