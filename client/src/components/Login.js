@@ -1,5 +1,8 @@
 import React, {useRef, useState, useEffect, useContext} from 'react'
+import axios from '../api/axios'
 import AuthContext from '../context/AuthProvider'
+
+const LOGIN_URL = '/api/authorize'
 
 const Login = () => {
     const { setAuth } = useContext(AuthContext)
@@ -22,10 +25,32 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        console.log(email, pwd)
-        setEmail('')
-        setPwd('')
-        setSuccess(true)
+
+        try {
+            const response = await axios.post(LOGIN_URL, JSON.stringify({email, password: pwd}),
+                {
+                    headers: {'Content-Type' : 'application/json'},
+                    withCredentials: true
+                }
+            )
+            const accessToken = response?.data?.accessToken
+            setAuth({ email, password: pwd, accessToken })
+            setEmail('')
+            setPwd('')
+            setSuccess(true)
+        } catch (err) {
+            if(!err?.response) {
+                setErrMsg('No Server Response')
+            } else if(err.response?.status === 400) {
+                setErrMsg('Missing Email or Password')
+            } else if(err.response?.status === 401) {
+                setErrMsg('Unauthorized')
+            } else {
+                setErrMsg('Login Failed')
+            }
+            errRef.current.focus()
+        }
+
     }
 
     // classes for css: errmsg, offscreen
@@ -57,7 +82,7 @@ const Login = () => {
 
                 <label htmlFor='password'> Password: </label>
                 <input
-                    type='text' 
+                    type='password' 
                     id='password'
                     onChange={(e) => setPwd(e.target.value)}
                     value={pwd}
