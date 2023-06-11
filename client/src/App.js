@@ -4,17 +4,33 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Layout from './components/Layout';
 
+import Admin from './views/Admin'
+import Reader from './views/Reader'
+import Writer from './views/Writer'
+import Unauthorized from './views/Unauthorized';
+
+
+
 function App() {
   return (
     <Routes>
       <Route path='/' element={<Layout />} >
         {/* public routes */}
+        <Route path='/' element={<Register />} />
         <Route path='login' element={<Login />} />
-        <Route path='register' element={<Register />} />
+        <Route path='unauthorized' element={<Unauthorized />} />
 
         {/* protected routes [logged in]*/}
-        <Route path='/' element={<RequireAuth />}>
-          {/* All protected Routes */}
+        <Route element={<RequireAuth allowedRoles={[2292]} />}>
+          <Route path='reader' element={<Reader />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[1131, 3840]}/>}>
+          <Route path='writer' element={<Writer />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[3840]}/>}>
+          <Route path='admin' element={<Admin />} />
         </Route>
 
         {/* catch all any request that doesn't match a request...404 page  */}

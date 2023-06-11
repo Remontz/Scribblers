@@ -40,7 +40,8 @@ const Login = () => {
                 }
             )
             const accessToken = response?.data?.accessToken
-            setAuth({ email, password: pwd, accessToken })
+            const roles = response?.data?.roles
+            setAuth({ email, password: pwd, roles, accessToken })
             setEmail('')
             setPwd('')
             navigate(from, {replace: true})

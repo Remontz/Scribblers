@@ -4,6 +4,7 @@ import {HashLink as Link} from 'react-router-hash-link'
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from '../api/axios'
+import Nav from './Nav';
 
 const NAME_REGEX = /^[a-zA-Z]{3,24}$/
 const DISPLAY_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/
@@ -133,16 +134,8 @@ const Register = () => {
     //classes to create in CSS:
     // 'errmsg' 'offscreen' 'instructions' 'valid' 'hide' 'invalid'
     return (
-        <>
-        {success ? (
-            <section>
-                <h1>Success</h1>
-                <p>
-                    <Link to='/login'>Sign In</Link>
-                </p>
-            </section>
-        ) : (
         <section>
+            <Nav />
             <p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live='assertive'>{errMsg}</p>
             <h1>Register</h1>
             <form onSubmit={handleSubmit}>
@@ -310,8 +303,6 @@ const Register = () => {
                 </span>
             </p>
         </section>
-        )}
-        </>
         )
 };
 
