@@ -17,16 +17,18 @@ const handleRefreshToken = asyncHandler( async(req, res) => {
         process.env.REFRESH_TOKEN_SECRET,
         (err, decoded) => {
             if(err || foundUser.email !== decoded.email) { return res.sendStatus(403).json({ 'message' : 'Forbidden User Email invalid' }) }
+            const roles = Object.values(foundUser.roles)
             const accessToken = jwt.sign(
                 {
                     "UserInfo" : {
                         "useremail" : foundUser.email,
-                        "userdisplay" : foundUser.displayName
+                        "userdisplay" : foundUser.displayName,
+                        "roles" : roles
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET, { expiresIn: '900s' }
             )
-            res.json({ accessToken })
+            res.json({ accessToken, roles })
         }
     )
 } )

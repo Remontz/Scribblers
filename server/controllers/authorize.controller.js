@@ -12,12 +12,14 @@ const handleLogin = async (req, res) => {
 
     const matchPwd = await bcrypt.compare(password, foundUser.password)
     if(matchPwd) {
+        const roles = Object.values(foundUser.roles).filter(Boolean)
         // create JWTs
         const accessToken = jwt.sign(
             {
                 "UserInfo" : {
                     "useremail" : foundUser.email,
-                    "userdisplay" : foundUser.displayName
+                    "userdisplay" : foundUser.displayName,
+                    "roles" : roles
                 }
             },
             process.env.ACCESS_TOKEN_SECRET,{expiresIn: '300s'}
@@ -31,10 +33,12 @@ const handleLogin = async (req, res) => {
         // save refreshToken w/current User
         foundUser.refreshToken = refreshToken
         const result = await foundUser.save()
+        console.log(result)
+        console.log(roles)
 
         res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', /* secure: true, */ maxAge: 24*60*60*1000 })
         
-        res.json({ accessToken })
+        res.json({ roles, accessToken })
     } else {
         res.sendStatus(401).json({'message' : 'Incorrect Password'})
     }

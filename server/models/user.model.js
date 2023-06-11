@@ -75,7 +75,15 @@ const userSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Message'
         }],
-        
+        roles: {
+            User:{
+                type: Number,
+                default: 2292
+            },
+            Editor: Number,
+            Admin: Number
+        },
+
         refreshToken: String
     }
 )

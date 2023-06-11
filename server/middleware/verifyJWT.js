@@ -13,6 +13,7 @@ const verifyJWT = (req, res, next) => {
             if(err) { return res.sendStatus(403).json({'message' : `Forbidden: ${err}`}) }
             req.useremail = decoded.UserInfo.useremail
             req.userdisplay = decoded.UserInfo.userdisplay
+            req.roles = decoded.UserInfo.roles
             next()
         }
     )
