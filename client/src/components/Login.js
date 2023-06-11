@@ -1,18 +1,24 @@
-import React, {useRef, useState, useEffect, useContext} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
+import useAuth from '../hooks/useAuth'
+import { HashLink as Link } from 'react-router-hash-link'
+import {useNavigate, useLocation} from 'react-router-dom'
 import axios from '../api/axios'
-import AuthContext from '../context/AuthProvider'
 
 const LOGIN_URL = '/api/authorize'
 
 const Login = () => {
-    const { setAuth } = useContext(AuthContext)
+    const { setAuth } = useAuth()
+    
+    const navigate = useNavigate()
+    const location = useLocation()
+    const from = location.state?.from?.pathname || '/'
+
     const emailRef = useRef()
     const errRef = useRef()
 
     const [email, setEmail] = useState('')
     const [pwd, setPwd] = useState('')
     const [errMsg, setErrMsg] = useState('')
-    const [success, setSuccess] = useState(false)
 
 
     useEffect(() => {
@@ -37,7 +43,7 @@ const Login = () => {
             setAuth({ email, password: pwd, accessToken })
             setEmail('')
             setPwd('')
-            setSuccess(true)
+            navigate(from, {replace: true})
         } catch (err) {
             if(!err?.response) {
                 setErrMsg('No Server Response')
@@ -55,16 +61,6 @@ const Login = () => {
 
     // classes for css: errmsg, offscreen
     return (
-    <>
-        {success ? (
-            <section>
-                <h1>You are logged in!</h1>
-                <br />
-                <p>
-                    <a href='#'>Go to Home</a>
-                </p>
-            </section>
-        ) : (
         <section>
             <p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live='assertive'>{errMsg}</p>
             <h1>Sign In</h1>
@@ -94,13 +90,11 @@ const Login = () => {
             <p>
                 Need an Account <br />
                 <span>
-                    {/* React Router Link */}
-                    <a href='#'>Sign up</a>
+                    <Link to='/'>Sign Up</Link>
                 </span>
             </p>
-        </section> )}
-    </>
-    ) 
+        </section> 
+    )
 }
 
 export default Login

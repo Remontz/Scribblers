@@ -1,5 +1,6 @@
 import '../styles/register.style.css'
 import React, { useRef, useState, useEffect } from "react";
+import {HashLink as Link} from 'react-router-hash-link'
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from '../api/axios'
@@ -91,6 +92,7 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if(lastname === '') {setLastname('DEFAULT')}
         const v1 = NAME_REGEX.test(firstname)
         const v2 = NAME_REGEX.test(lastname)
         const v3 = DISPLAY_REGEX.test(displayName)
@@ -136,7 +138,7 @@ const Register = () => {
             <section>
                 <h1>Success</h1>
                 <p>
-                    <a href='#'>Sign In</a>
+                    <Link to='/login'>Sign In</Link>
                 </p>
             </section>
         ) : (
@@ -172,9 +174,9 @@ const Register = () => {
                 </p>
                 <label htmlFor="lastname">
                     Last Name:
-                    <span className={validLastname ? 'valid' : 'hide'}>
+                    {/* <span className={validLastname ? 'valid' : 'hide'}>
                         <FontAwesomeIcon icon={faCheck} />
-                    </span>
+                    </span> */}
                     <span className={validLastname || !lastname ? 'hide' : 'invalid'}>
                         <FontAwesomeIcon icon={faTimes} />
                     </span>
@@ -304,7 +306,7 @@ const Register = () => {
                 Already registered?<br/>
                 <span className='line'>
                     {/*put router link here*/}
-                    <a href='#'>Sign In</a>
+                    <Link to='/login'>Sign In</Link>
                 </span>
             </p>
         </section>
