@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const handleLogin = async (req, res) => {
+    const cookies = req.cookies
+    console.log(`cookie available at login: ${JSON.stringify(cookies)}`)
+
     const { email, password } = req.body
     if(!email || !password) return res.status(400).json({'message' : 'Email and Password required for logging in.'})
 
@@ -22,23 +25,39 @@ const handleLogin = async (req, res) => {
                     "roles" : roles
                 }
             },
-            process.env.ACCESS_TOKEN_SECRET,{expiresIn: '300s'}
+            process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10m'}
         )
-        const refreshToken = jwt.sign(
+        const newRefreshToken = jwt.sign(
             { "userdisplay" : foundUser.displayName },
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: '1d' }
         )
 
+        let newRefreshTokenArray = !cookies?.jwt ? foundUser.refreshToken : foundUser.refreshToken.filter(rt => rt !== cookies.jwt)
+
+        if(cookies?.jwt) {
+            const refreshToken = cookies.jwt
+            const foundToken = await User.findOne({ refreshToken }).exec()
+
+            if(!foundToken) {
+                console.log('attempted refresh token reuse at login!')
+                newRefreshTokenArray = []
+            }
+
+            res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true})
+        }
+
+
         // save refreshToken w/current User
-        foundUser.refreshToken = refreshToken
+        foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken]
         const result = await foundUser.save()
         console.log(result)
         console.log(roles)
 
-        res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', /* secure: true, */ maxAge: 24*60*60*1000 })
+        res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24*60*60*1000 })
         
-        res.json({ roles, accessToken })
+        res.json({ accessToken })
+        
     } else {
         res.sendStatus(401).json({'message' : 'Incorrect Password'})
     }
