@@ -5,7 +5,7 @@ const handleLogout = asyncHandler( async(req, res) => {
     // DELETE ACCESSTOKEN CLIENTSIDE!!!!!!
 
     const cookies = req.cookies
-    if(!cookies?.jwt) { return res.sendStatus(204).json({'message' : 'No Cookies ||No Token Found'}) }
+    if(!cookies?.jwt) { return res.sendStatus(204).json({'message' : 'No Cookies || No Token Found || No User to Logout'}) }
 
     const refreshToken = cookies.jwt
     const foundUser = await User.findOne({ refreshToken }).exec()
@@ -18,7 +18,7 @@ const handleLogout = asyncHandler( async(req, res) => {
     foundUser.refreshToken = ''
     const result = await foundUser.save()
 
-    res.clearCookie('jwt', { httpOnly: true, /* secure: true, */ sameSite: 'None', secure: true })
+    res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'None', secure: true })
     res.sendStatus(204).json({ 'message' : 'Success | User Logging out & Token/Cookies Cleared' })
 } )
 

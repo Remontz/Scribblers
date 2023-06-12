@@ -1,5 +1,5 @@
 import { HashLink as Link } from "react-router-hash-link";
-import Users from './Users'
+import Users from '../components/Users'
 
 const Admin = () => {
   return (

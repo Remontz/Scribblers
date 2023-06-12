@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import RequireAuth from './components/RequireAuth';
+import PersistLogin from './components/PersistLogin';
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Layout from './components/Layout';
@@ -21,16 +22,18 @@ function App() {
         <Route path='unauthorized' element={<Unauthorized />} />
 
         {/* protected routes [logged in]*/}
-        <Route element={<RequireAuth allowedRoles={[2292]} />}>
-          <Route path='reader' element={<Reader />} />
-        </Route>
-
-        <Route element={<RequireAuth allowedRoles={[1131, 3840]}/>}>
-          <Route path='writer' element={<Writer />} />
-        </Route>
-
-        <Route element={<RequireAuth allowedRoles={[3840]}/>}>
-          <Route path='admin' element={<Admin />} />
+        <Route element={<PersistLogin />}>
+          <Route element={<RequireAuth allowedRoles={[2292]} />}>
+            <Route path='reader' element={<Reader />} />
+          </Route>
+    
+          <Route element={<RequireAuth allowedRoles={[1131, 3840]}/>}>
+            <Route path='writer' element={<Writer />} />
+          </Route>
+    
+          <Route element={<RequireAuth allowedRoles={[3840]}/>}>
+            <Route path='admin' element={<Admin />} />
+          </Route>
         </Route>
 
         {/* catch all any request that doesn't match a request...404 page  */}
