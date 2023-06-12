@@ -85,7 +85,8 @@ const userSchema = new mongoose.Schema(
         },
 
         refreshToken: String
-    }
+    },
+    { timestamps: true }
 )
 
 module.exports = mongoose.model('User', userSchema)
