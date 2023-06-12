@@ -2,12 +2,15 @@ import React, {useRef, useState, useEffect} from 'react'
 import useAuth from '../hooks/useAuth'
 import { HashLink as Link } from 'react-router-hash-link'
 import {useNavigate, useLocation} from 'react-router-dom'
-import axios from '../api/axios'
+import useInput from '../hooks/useInput'
+import useToggle from '../hooks/useToggle'
 
+import axios from '../api/axios'
 const LOGIN_URL = '/api/authorize'
 
+
 const Login = () => {
-    const { setAuth, persist, setPersist } = useAuth()
+    const { setAuth } = useAuth()
     
     const navigate = useNavigate()
     const location = useLocation()
@@ -16,9 +19,10 @@ const Login = () => {
     const emailRef = useRef()
     const errRef = useRef()
 
-    const [email, setEmail] = useState('')
+    const [email, resetEmail, emailAttribs] = useInput('email', '') //useState('')
     const [pwd, setPwd] = useState('')
     const [errMsg, setErrMsg] = useState('')
+    const [check, toggleCheck] = useToggle('persist', false)
 
 
     useEffect(() => {
@@ -44,7 +48,7 @@ const Login = () => {
             const accessToken = response?.data?.accessToken
             const roles = response?.data?.roles
             setAuth({ email, password: pwd, roles, accessToken })
-            setEmail('')
+            resetEmail() // setEmail('')
             setPwd('')
             navigate(from, {replace: true})
         } catch (err) {
@@ -62,13 +66,13 @@ const Login = () => {
 
     }
 
-    const togglePersist = () => {
-        setPersist(prev => !prev)
-    }
+    // const togglePersist = () => {
+    //     setPersist(prev => !prev)
+    // }
 
-    useEffect(() => {
-        localStorage.setItem('persist', persist)
-    }, [persist])
+    // useEffect(() => {
+    //     localStorage.setItem('persist', persist)
+    // }, [persist])
 
     // classes for css: errmsg, offscreen
     return (
@@ -82,8 +86,7 @@ const Login = () => {
                     id='email'
                     ref={emailRef}
                     autoComplete='off'
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
+                    {...emailAttribs}
                     required
                 />
 
@@ -101,8 +104,8 @@ const Login = () => {
                     <input
                         type='checkbox'
                         id='persist'
-                        onChange = {togglePersist}
-                        checked={persist}
+                        onChange = {toggleCheck}
+                        checked={check}
                     />
                     <label htmlFor='persist'>Trust this device</label>
                 </div>
