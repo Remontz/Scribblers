@@ -29,12 +29,12 @@ app.use('/api/register', require('./routes/api/register.routes'))
 app.use('/api/authorize', require('./routes/api/authorize.routes'))
 app.use('/api/logout', require('./routes/api/logout.routes'))
 app.use('/api/refreshToken', require('./routes/api/refreshToken.routes'))
+app.use('/api/story', require('./routes/api/story.routes'))
 
 app.use(verifyJWT)
 // ROUTES AFTER (verifyJWT)
 // all content routes
 app.use('/api/user', require('./routes/api/user.routes'))
-app.use('/api/story', require('./routes/api/story.routes'))
 
 mongoose.connection.once('open', ()=> {
     console.log('Connected to MongoDB')

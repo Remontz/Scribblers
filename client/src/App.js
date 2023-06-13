@@ -9,6 +9,7 @@ import Admin from './views/Admin'
 import Reader from './views/Reader'
 import Writer from './views/Writer'
 import Unauthorized from './views/Unauthorized';
+import Home from './views/Home';
 
 
 
@@ -17,7 +18,8 @@ function App() {
     <Routes>
       <Route path='/' element={<Layout />} >
         {/* public routes */}
-        <Route path='/' element={<Register />} />
+        <Route path='/' element={<Home />} />
+        <Route path='register' element={<Register />} />
         <Route path='login' element={<Login />} />
         <Route path='unauthorized' element={<Unauthorized />} />
 
