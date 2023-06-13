@@ -1,4 +1,3 @@
-// edit, delete, viewOne, viewAll
 const express = require('express')
 const router = express.Router()
 const {viewAllUsers, viewOneUser, updateUser, deleteUser} = require('../../controllers/user.controller')

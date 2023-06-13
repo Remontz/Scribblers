@@ -34,6 +34,7 @@ app.use(verifyJWT)
 // ROUTES AFTER (verifyJWT)
 // all content routes
 app.use('/api/user', require('./routes/api/user.routes'))
+app.use('/api/story', require('./routes/api/story.routes'))
 
 mongoose.connection.once('open', ()=> {
     console.log('Connected to MongoDB')
