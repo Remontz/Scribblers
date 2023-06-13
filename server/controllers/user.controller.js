@@ -22,7 +22,7 @@ const viewOneUser = asyncHandler(async (req, res) => {
 //UPDATE
 const updateUser = asyncHandler(async (req, res) => {
     const {_id, firstname, lastname, displayName, email, password, favorites, works, library, friends, messages} = req.body
-    if(!_id) { return res.status(400).json({ 'message' : 'PARAM: User ID required' }) }
+    if(!_id) { return res.status(400).json({ 'message' : 'User ID required' }) }
 
     const user = await User.findOne({_id}).exec()
     if(!user) { return res.status(204).json({'message' : `No User found with ID ${_id}`}) }
@@ -45,7 +45,7 @@ const updateUser = asyncHandler(async (req, res) => {
 //DELETE
 const deleteUser = asyncHandler(async (req, res) => {
     const {_id} = req.body
-    if(!_id) { return res.status(400).json({ 'message' : 'PARAM: User ID required' }) }
+    if(!_id) { return res.status(400).json({ 'message' : 'User ID required' }) }
 
     const user = await User.findOne({_id}).exec()
     if(!user) {return res.status(204).json({'message' : `No user found with ID: ${_id}`})

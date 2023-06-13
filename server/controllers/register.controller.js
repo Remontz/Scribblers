@@ -21,7 +21,7 @@ const handleNewUser = asyncHandler(async (req, res) => {
         })
         console.log(result)
 
-        res.status(201).json({'success' : `New user ${result.displayName} created`})
+        res.status(201).json({'success' : `New user ${result.displayName} created.`})
     } catch(err) { res.status(500).json({'message': err.message}) }
 })
 
